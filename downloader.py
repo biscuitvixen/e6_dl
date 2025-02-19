@@ -3,7 +3,6 @@
 import requests
 import shutil
 import os
-import asyncio
 from models import Post
 
 async def download_image(post: Post, index, working_dir):
