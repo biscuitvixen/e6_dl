@@ -9,7 +9,7 @@ async def main():
     """Command-line interface for downloading pools."""
     parser = argparse.ArgumentParser(description="Download pools from e621.")
     parser.add_argument("pool_ids", nargs="+", help="List of pool IDs or URLs")
-    parser.add_argument("--log-level", default="INFO", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
+    parser.add_argument("-l", "--log-level", default="INFO", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
 
     args = parser.parse_args()
 
