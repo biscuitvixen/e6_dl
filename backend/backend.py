@@ -8,6 +8,8 @@ from backend.downloader import download_image
 from backend.utils import create_directory, create_internet_shortcut
 from backend.logger_config import logger
 
+RATE_LIMIT = 2 # Seconds. e621 API rate limit is 2 requests per second
+
 class E621Downloader:
     def __init__(self):
         """Initialize downloader with API client and rate limiter."""
@@ -19,8 +21,8 @@ class E621Downloader:
         """Rate-limited API request function."""
         async with self.rate_limit:
             elapsed_time = time.time() - self.last_request_time
-            if elapsed_time < 2:  # Enforce 2s delay per request
-                await asyncio.sleep(2 - elapsed_time)
+            if elapsed_time < RATE_LIMIT:  # Enforce delay per request
+                await asyncio.sleep(RATE_LIMIT - elapsed_time)
 
             result = await func(*args)  # Await the function call
             self.last_request_time = time.time()
