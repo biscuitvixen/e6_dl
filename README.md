@@ -17,11 +17,12 @@ default browser.
 
 ### Dependencies
 In order to use this script you will need to install the following:
-- `requests`
+- `aiohttp`
+- `aiofiles`
 - `colorlog`
 
 ```bash
-pip install requests colorlog
+pip install aiohttp aiofiles colorlog
 ```
 
 ## Usage

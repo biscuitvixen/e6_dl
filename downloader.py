@@ -1,13 +1,13 @@
 """ Module for downloading images asynchronously """
 
-import requests
-import shutil
+import aiohttp
+import aiofiles
 import os
 from models import Post
 from logger_config import logger
 
 async def download_image(post: Post, index, working_dir):
-    """Downloads an image asynchronously."""
+    """Downloads an image asynchronously using aiohttp."""
     if post.is_deleted:
         logger.warning(f"Skipping deleted post {post.id}")
         return
@@ -20,10 +20,17 @@ async def download_image(post: Post, index, working_dir):
     path = os.path.join(working_dir, filename)
 
     try:
-        response = requests.get(post.file_url, stream=True)
-        response.raise_for_status()
-        with open(path, "wb") as f:
-            shutil.copyfileobj(response.raw, f)
-        logger.debug(f"Downloaded {path}")
-    except requests.exceptions.RequestException as e:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(post.file_url) as response:
+                if response.status != 200:
+                    logger.warning(f"Failed to download {post.file_url}: HTTP {response.status}")
+                    return
+
+                # Asynchronous file writing
+                async with aiofiles.open(path, "wb") as f:
+                    await f.write(await response.read())
+
+        logger.info(f"Downloaded {path}")
+    
+    except aiohttp.ClientError as e:
         logger.warning(f"Failed to download {post.file_url}: {e}")

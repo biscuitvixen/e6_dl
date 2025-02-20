@@ -21,7 +21,7 @@ class E621Downloader:
             if elapsed_time < 2:  # Enforce 2s delay per request
                 await asyncio.sleep(2 - elapsed_time)
 
-            result = func(*args)
+            result = await func(*args)  # Await the function call
             self.last_request_time = time.time()
             return result
 
