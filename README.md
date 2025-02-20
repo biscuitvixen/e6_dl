@@ -18,9 +18,10 @@ default browser.
 ### Dependencies
 In order to use this script you will need to install the following:
 - `requests`
+- `colorlog`
 
 ```bash
-pip install requests
+pip install requests colorlog
 ```
 
 ## Usage
