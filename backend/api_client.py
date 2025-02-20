@@ -1,7 +1,7 @@
 """ Handles API requests to e621.net """
 
 import aiohttp
-from logger_config import logger
+from backend.logger_config import logger
 
 USER_AGENT = "sandydownloader/2.0 (by @biscuit_fox)"
 API_URL = "https://e621.net"

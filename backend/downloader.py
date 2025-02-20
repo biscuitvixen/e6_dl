@@ -3,8 +3,8 @@
 import aiohttp
 import aiofiles
 import os
-from models import Post
-from logger_config import logger
+from backend.models import Post
+from backend.logger_config import logger
 
 async def download_image(post: Post, index, working_dir):
     """Downloads an image asynchronously using aiohttp."""

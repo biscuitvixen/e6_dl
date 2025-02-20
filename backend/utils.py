@@ -1,7 +1,7 @@
 """ This file contains utility functions for the project """
 
 import os
-from logger_config import logger
+from backend.logger_config import logger
 
 def create_directory(pool_name, artist):
     """Creates a directory for the downloaded pool and returns the

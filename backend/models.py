@@ -1,6 +1,6 @@
 """ Class structures for storing e621 api data """
 
-from logger_config import logger
+from backend.logger_config import logger
 
 class Pool:
     """Represents a pool on e621.net"""
