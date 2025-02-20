@@ -25,5 +25,9 @@ async def main():
 
     await process_pool_ids(pool_ids)
 
-if __name__ == "__main__":
+def cli():
+    """Entry point for console script"""
     asyncio.run(main())
+
+if __name__ == "__main__":
+    cli()
