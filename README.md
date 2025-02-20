@@ -64,14 +64,6 @@ Want more details? Run:
 e6dl 123456 --log-level=DEBUG
 ```
 
-### **5️⃣ Using the Legacy Interface**
-If you'd like to use the older — interactive — interface, you can still do so using:
-```bash
-python backend/main.py
-```
-This will ask you for the pool ID or URL, and download the pool to the current directory.
-> 💡 **Note**: The CLI (e6dl) is the new default interface.
-
 ## Future Plans
 - [x] Launch with arguments
 - [x] Pool queue
@@ -80,4 +72,8 @@ This will ask you for the pool ID or URL, and download the pool to the current d
     - [ ] Pool queue
     - [ ] Image queue
     - [ ] Download progress
-- [ ] PATH configuration
+- [x] PATH configuration
+- [ ] Skip existing
+- [ ] Download only missing
+- [ ] Download only new
+- [ ] Download resume
