@@ -37,8 +37,8 @@ pool to the current directory.
 > ## > This is the current, *temporary*, legacy interface <
 
 ## Future Plans
-- [ ] Launch with arguments
-- [ ] Pool queue
+- [x] Launch with arguments
+- [x] Pool queue
 - [ ] Live enqueueing
 - [ ] Terminal GUI
     - [ ] Pool queue
