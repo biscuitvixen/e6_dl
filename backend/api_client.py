@@ -3,7 +3,7 @@
 import aiohttp
 from backend.logger_config import logger
 
-USER_AGENT = "sandydownloader/2.0 (by @biscuit_fox)"
+USER_AGENT = "sandydownloader/0.1 (by @biscuit_fox)"
 API_URL = "https://e621.net"
 
 class E621Client:
