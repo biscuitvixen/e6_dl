@@ -37,6 +37,6 @@ def set_log_level(level: str):
     if level in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
         logger.setLevel(getattr(logging, level))
         logging.getLogger().setLevel(getattr(logging, level))  # Apply globally
-        logger.info(f"Log level set to {level}")
+        logger.debug(f"Log level set to {level}")
     else:
         logger.warning(f"Invalid log level: {level}. Using default INFO.")
