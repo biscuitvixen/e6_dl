@@ -2,6 +2,7 @@
 
 import logging
 import colorlog
+from logging.handlers import RotatingFileHandler
 
 # Define a colorized log format
 log_colors = {
@@ -29,6 +30,14 @@ console_handler.setFormatter(formatter)
 
 # Attach the handler to the logger
 logger.addHandler(console_handler)
+
+# Create a rotating file handler that logs at the debug level
+file_handler = RotatingFileHandler('e6dl.log', maxBytes=10485760, backupCount=5)  # 10MB per file, keep 5 backups
+file_handler.setLevel(logging.DEBUG) # All levels will be logged
+file_handler.setFormatter(formatter)
+
+# Attach the file handler to the logger
+logger.addHandler(file_handler)
 
 # Function to dynamically update log level
 def set_log_level(level: str):
