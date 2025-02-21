@@ -29,15 +29,31 @@ async def main():
         logger.error("No valid pool IDs provided.")
         return
 
-    await process_pool_ids(pool_ids)
+    try:
+        await process_pool_ids(pool_ids)
+    except asyncio.CancelledError:
+        logger.warning("Download process interrupted.")
+    finally:
+        logger.info("Shutting down gracefully...")
 
 def cli():
     """Entry point for console script"""
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logger.info("Exiting...")
-        return
+        logger.warning("Keyboard interrupt received. Cancelling tasks...")
+
+        loop = asyncio.get_event_loop()
+        tasks = [t for t in asyncio.all_tasks(loop) if not t.done()]
+        for task in tasks:
+            task.cancel()
+
+        try:
+            loop.run_until_complete(asyncio.gather(*tasks, return_exceptions=True))
+        except Exception as e:
+            logger.error(f"Exception during shutdown: {e}")
+
+        logger.info("Exiting gracefully.")
 
 if __name__ == "__main__":
     cli()
