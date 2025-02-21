@@ -6,7 +6,7 @@ from backend.backend import process_pool_ids
 async def main():
     """Command-line interface for downloading pools."""
     parser = argparse.ArgumentParser(description="Download pools from e621.")
-    parser.add_argument("pool_ids", nargs="+", help="List of pool IDs or URLs")
+    parser.add_argument("pool_ids", nargs="*", help="List of pool IDs or URLs")
     parser.add_argument("-l", "--log-level", default="INFO", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
 
     args = parser.parse_args()
@@ -14,8 +14,16 @@ async def main():
     # Set log level
     set_log_level(args.log_level)
 
+    raw_ids = args.pool_ids
+
+    if not raw_ids:
+        logger.error("No pool IDs provided.")
+        raw_ids = input("Enter pool IDs or URLs: ").split()
+
+    logger.debug(f"Input: {raw_ids}") 
+
     # Extract numeric pool IDs from URLs if necessary
-    pool_ids = [int(pool.split("/")[-1]) for pool in args.pool_ids if pool.split("/")[-1].isdigit()]
+    pool_ids = [int(pool.split("/")[-1]) for pool in raw_ids if pool.split("/")[-1].isdigit()]
 
     if not pool_ids:
         logger.error("No valid pool IDs provided.")
