@@ -33,7 +33,11 @@ async def main():
 
 def cli():
     """Entry point for console script"""
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        logger.info("Exiting...")
+        return
 
 if __name__ == "__main__":
     cli()
