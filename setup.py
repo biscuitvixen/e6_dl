@@ -4,6 +4,7 @@ setup(
     name="e6dl",
     version="1.0.0",
     packages=find_packages(include=["backend", "backend.*"]),
+    py_modules=["cli_entry"],
     install_requires=[
         "aiohttp",
         "aiofiles",
@@ -11,7 +12,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "e6dl=backend.main:cli",
+            "e6dl=cli_entry:cli",
         ],
     },
     author="Sandra Biscuit",

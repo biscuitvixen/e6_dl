@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import asyncio
 import argparse
 from backend.logger_config import set_log_level, logger
