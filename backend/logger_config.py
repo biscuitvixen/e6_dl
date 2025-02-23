@@ -22,7 +22,7 @@ formatter = colorlog.ColoredFormatter(
 
 # Create a logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)  # Default log level
+logger.setLevel(logging.WARNING)  # Default log level
 
 # Create a console handler
 console_handler = logging.StreamHandler()
@@ -48,4 +48,4 @@ def set_log_level(level: str):
         logging.getLogger().setLevel(getattr(logging, level))  # Apply globally
         logger.debug(f"Log level set to {level}")
     else:
-        logger.warning(f"Invalid log level: {level}. Using default INFO.")
+        logger.warning(f"Invalid log level: {level}. Using default.")

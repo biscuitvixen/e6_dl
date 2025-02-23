@@ -7,11 +7,12 @@ async def main():
     """Command-line interface for downloading pools."""
     parser = argparse.ArgumentParser(description="Download pools from e621.")
     parser.add_argument("pool_ids", nargs="*", help="List of pool IDs or URLs")
-    parser.add_argument("-l", "--log-level", default="INFO", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
+    parser.add_argument("-l", "--log-level", default="WARNING", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
 
     args = parser.parse_args()
 
     # Set log level
+    logger.info(f"Setting log level to {args.log_level}")
     set_log_level(args.log_level)
 
     raw_ids = args.pool_ids
@@ -30,7 +31,8 @@ async def main():
         return
 
     try:
-        await process_pool_ids(pool_ids)
+        total_posts = await process_pool_ids(pool_ids)
+        logger.info(f"Download complete. {total_posts} images downloaded.")
     except asyncio.CancelledError:
         logger.warning("Download process interrupted.")
     finally:
