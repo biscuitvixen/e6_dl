@@ -19,7 +19,7 @@ Finally, it will create an **internet shortcut file (`.url`)** that will open th
 Make sure you have **Python 3.7+** installed. Then install the required dependencies:
 
 ```bash
-pip install aiohttp aiofiles colorlog setuptools
+pip install aiohttp aiofiles colorlog setuptools tqdm
 ```
 
 ## **2️⃣ Install the CLI Tool**
