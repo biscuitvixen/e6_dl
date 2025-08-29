@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "e6dl"
+version = "1.0.0"
+description = "A command-line tool to download pools from e621."
+authors = ["Sandra Biscuit <onlybiscuit7@gmail.com>"]
+readme = "README.md"
+packages = [
+    {include = "backend"},
+    {include = "cli_entry.py"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiohttp = "^3.12.15"
+aiofiles = "^24.1.0"
+colorlog = "^6.9.0"
+tqdm = "^4.66.0"
+
+[tool.poetry.scripts]
+e6 = "cli_entry:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

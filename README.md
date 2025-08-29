@@ -15,53 +15,56 @@ Finally, it will create an **internet shortcut file (`.url`)** that will open th
 
 ## **📥 Installation**
 
-### **1️⃣ Install Dependencies**
-Make sure you have **Python 3.7+** installed. Then install the required dependencies:
+### **1️⃣ Install pipx**
+Make sure you have **Python 3.8+** installed. Then install pipx for isolated package management:
 
 ```bash
-pip install aiohttp aiofiles colorlog setuptools tqdm
+pip install pipx
+pipx ensurepath
 ```
 
-## **2️⃣ Install the CLI Tool**
-You can install the package as a system-wide command:
+*Note: You'll need to restart your terminal after running `pipx ensurepath`.*
+
+### **2️⃣ Install the CLI Tool**
+Install the package globally with isolated dependencies:
 
 ```bash
-pip install --editable .
+pipx install .
 ```
 
-## **3️⃣ Verify Installation**
-After installation, you should be able to run the following command:
+### **3️⃣ Verify Installation**
+After installation, you should be able to run:
 
 ```bash
-e6dl --help
+e6 --help
 ```
 
-If you see the help message, you're good to go!
+If you see the help message, you're good to go! The `e6` command is now available globally.
 
 ## Usage
 ### **1️⃣ Download a single pool**
 Run:
 ```bash
-e6dl 123456
+e6 123456
 ```
 
 ### **2️⃣ Download multiple pools**
 Run:
 ```bash
-e6dl 123456 987654 ...
+e6 123456 987654 ...
 ```
 You can specify multiple pools to download at once.
 
 ### **3️⃣ Download a pool by URL**
 Run:
 ```bash
-e6dl https://e621.net/pool/123456
+e6 https://e621.net/pool/123456
 ```
 
 ### **4️⃣ Enable debug logging** 
 Want more details? Run:
 ```bash
-e6dl 123456 --log-level=DEBUG
+e6 123456 --log-level=DEBUG
 ```
 
 ## Future Plans
