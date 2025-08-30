@@ -8,6 +8,8 @@ async def main():
     parser = argparse.ArgumentParser(description="Download pools from e621.")
     parser.add_argument("pool_ids", nargs="*", help="List of pool IDs or URLs")
     parser.add_argument("-l", "--log-level", default="WARNING", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
+    parser.add_argument("--force-redownload", action="store_true", help="Redownload all files, even if they already exist")
+    parser.add_argument("-d", "--download-dir", default=".", help="Base directory for downloads (default: current directory)")
 
     args = parser.parse_args()
 
@@ -31,8 +33,9 @@ async def main():
         return
 
     try:
-        total_posts = await process_pool_ids(pool_ids)
-        logger.info(f"Download complete. {total_posts} images downloaded.")
+        skip_existing = not args.force_redownload
+        total_posts = await process_pool_ids(pool_ids, skip_existing=skip_existing, base_download_dir=args.download_dir)
+        logger.info(f"Download complete. {len(total_posts) if total_posts else 0} failed downloads.")
     except asyncio.CancelledError:
         logger.warning("Download process interrupted.")
     finally:
