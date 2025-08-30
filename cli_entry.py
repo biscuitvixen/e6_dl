@@ -39,7 +39,7 @@ async def main():
     except asyncio.CancelledError:
         logger.warning("Download process interrupted.")
     finally:
-        logger.info("Shutting down gracefully...")
+        logger.debug("Shutting down gracefully...")
 
 def cli():
     """Entry point for console script"""
