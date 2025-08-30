@@ -182,6 +182,7 @@ async def process_pool_ids(pool_ids, skip_existing=True, base_download_dir="."):
             total_images = len(missing_posts)
             
             if total_images == 0:
+                tqdm.write(f"✅ Pool {pool_name} is already complete!")
                 logger.info(f"Pool {pool_name} is already complete!")
                 continue
         else:
