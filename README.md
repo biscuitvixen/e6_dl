@@ -67,6 +67,23 @@ Want more details? Run:
 e6 123456 --log-level=DEBUG
 ```
 
+### **5️⃣ Update all previously downloaded pools**
+Check all your downloaded pools for new posts and download them:
+```bash
+e6 --update
+```
+
+This will:
+- Check all pools in your database for new posts
+- Show you which pools have updates available
+- Ask for confirmation before downloading
+- Download only the new posts, maintaining existing numbering
+
+You can also specify a custom download directory:
+```bash
+e6 --update -d /path/to/downloads
+```
+
 ## Future Plans
 - [x] Launch with arguments
 - [x] Pool queue
@@ -76,7 +93,7 @@ e6 123456 --log-level=DEBUG
     - [ ] Image queue
     - [ ] Download progress
 - [x] PATH configuration
-- [ ] Skip existing
-- [ ] Download only missing
-- [ ] Download only new
+- [x] Skip existing
+- [x] Download only missing
+- [x] Download only new (via --update)
 - [ ] Download resume

@@ -1,7 +1,7 @@
 import asyncio
 import argparse
 from backend.logger_config import set_log_level, logger
-from backend.backend import process_pool_ids
+from backend.backend import process_pool_ids, update_all_pools
 
 async def main():
     """Command-line interface for downloading pools."""
@@ -10,12 +10,23 @@ async def main():
     parser.add_argument("-l", "--log-level", default="WARNING", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
     parser.add_argument("--force-redownload", action="store_true", help="Redownload all files, even if they already exist")
     parser.add_argument("-d", "--download-dir", default=".", help="Base directory for downloads (default: current directory)")
+    parser.add_argument("--update", action="store_true", help="Check all previously downloaded pools for updates and download new posts")
 
     args = parser.parse_args()
 
     # Set log level
     logger.info(f"Setting log level to {args.log_level}")
     set_log_level(args.log_level)
+
+    # Handle update mode
+    if args.update:
+        if args.pool_ids:
+            logger.warning("Pool IDs are ignored when using --update mode")
+            print("⚠️  Pool IDs are ignored when using --update mode")
+        
+        logger.info("Checking all pools for updates...")
+        await update_all_pools(base_download_dir=args.download_dir)
+        return
 
     raw_ids = args.pool_ids
 

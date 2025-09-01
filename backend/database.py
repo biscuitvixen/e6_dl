@@ -196,3 +196,32 @@ class DownloadDatabase:
                 logger.info("These files will be considered as needing re-download to ensure database consistency")
             
             return missing_files
+    
+    def get_all_downloaded_pools(self):
+        """Get all pools that have been downloaded."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT id, name, artist, folder_path, post_count FROM pools ORDER BY last_updated DESC')
+            pools = []
+            for row in cursor.fetchall():
+                row_dict = dict(row)
+                row_dict['folder_path'] = self._to_absolute_path(row_dict['folder_path'])
+                pools.append(row_dict)
+            return pools
+    
+    def get_pool_current_post_count(self, pool_id):
+        """Get the current post count for a pool from the database."""
+        pool_info = self.get_pool_info(pool_id)
+        return pool_info['post_count'] if pool_info else 0
+    
+    def update_pool_post_count(self, pool_id, new_post_count):
+        """Update the post count for a pool."""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                UPDATE pools 
+                SET post_count = ?, last_updated = CURRENT_TIMESTAMP 
+                WHERE id = ?
+            ''', (new_post_count, pool_id))
+            conn.commit()
+            logger.debug(f"Updated pool {pool_id} post count to {new_post_count}")

@@ -152,6 +152,57 @@ class E621Downloader:
         logger.warning(f"Failed to download post {post_id}")
         return {"post_id": post_id, "status": "failed"}
 
+    async def check_pool_for_updates(self, pool_id):
+        """Check if a pool has new posts since last download."""
+        logger.info(f"Checking pool {pool_id} for updates...")
+        
+        # Get current pool data from API
+        current_pool = await self.fetch_pool(pool_id)
+        if not current_pool:
+            logger.warning(f"Could not fetch current data for pool {pool_id}")
+            return None
+        
+        # Get stored pool data from database
+        stored_pool = self.db.get_pool_info(pool_id)
+        if not stored_pool:
+            logger.info(f"Pool {pool_id} not found in database - treating as new pool")
+            return {
+                'pool_id': pool_id,
+                'pool_name': current_pool.name,
+                'has_updates': True,
+                'old_count': 0,
+                'new_count': current_pool.post_count,
+                'new_posts': len(current_pool.post_ids)
+            }
+        
+        # Compare post counts
+        old_count = stored_pool['post_count']
+        new_count = current_pool.post_count
+        
+        if new_count > old_count:
+            # Get posts that need to be downloaded
+            missing_posts = self.db.get_missing_posts(pool_id, current_pool.post_ids)
+            
+            logger.info(f"Pool '{current_pool.name}' has {new_count - old_count} new posts")
+            return {
+                'pool_id': pool_id,
+                'pool_name': current_pool.name,
+                'has_updates': True,
+                'old_count': old_count,
+                'new_count': new_count,
+                'new_posts': len(missing_posts)
+            }
+        else:
+            logger.info(f"Pool '{current_pool.name}' is up to date ({new_count} posts)")
+            return {
+                'pool_id': pool_id,
+                'pool_name': current_pool.name,
+                'has_updates': False,
+                'old_count': old_count,
+                'new_count': new_count,
+                'new_posts': 0
+            }
+
 
 async def process_pool_ids(pool_ids, skip_existing=True, base_download_dir="."):
     """Process multiple pool IDs asynchronously with progress tracking."""
@@ -182,7 +233,7 @@ async def process_pool_ids(pool_ids, skip_existing=True, base_download_dir="."):
             total_images = len(missing_posts)
             
             if total_images == 0:
-                tqdm.write(f"✅ Pool {pool_name} is already complete!")
+                tqdm.write(f"Pool {pool_name} is already complete!")
                 logger.info(f"Pool {pool_name} is already complete!")
                 continue
         else:
@@ -198,10 +249,72 @@ async def process_pool_ids(pool_ids, skip_existing=True, base_download_dir="."):
 
         # Print success message after pool download completes
         if success:
-            tqdm.write(f"✅ Successfully downloaded {len(success)} images for {pool_name}")
+            tqdm.write(f"Successfully downloaded {len(success)} images for {pool_name}")
 
         # Store failed downloads for potential retrying
         if failed:
             all_failed[pool_id] = failed
 
     return all_failed  # Return failed downloads for retrying later
+
+
+async def update_all_pools(base_download_dir="."):
+    """Check all previously downloaded pools for updates and download new posts."""
+    downloader = E621Downloader(base_download_dir=base_download_dir)
+    
+    # Get all pools from database
+    all_pools = downloader.db.get_all_downloaded_pools()
+    
+    if not all_pools:
+        logger.info("No pools found in database to update")
+        return
+    
+    logger.info(f"Checking {len(all_pools)} pools for updates...")
+    
+    pools_with_updates = []
+    
+    # Check each pool for updates
+    for pool_info in all_pools:
+        pool_id = pool_info['id']
+        update_info = await downloader.check_pool_for_updates(pool_id)
+        
+        if update_info and update_info['has_updates']:
+            pools_with_updates.append(update_info)
+    
+    if not pools_with_updates:
+        logger.info("All pools are up to date!")
+        print("All pools are up to date!")
+        return
+    
+    # Show summary of updates found
+    logger.info(f"Found updates for {len(pools_with_updates)} pools:")
+    print(f"\nFound updates for {len(pools_with_updates)} pools:")
+    for update in pools_with_updates:
+        update_msg = f"  - {update['pool_name']}: {update['old_count']} -> {update['new_count']} posts (+{update['new_posts']} new)"
+        logger.info(update_msg)
+        print(update_msg)
+    
+    # Ask user if they want to proceed with downloads
+    try:
+        response = input(f"\nDownload updates for {len(pools_with_updates)} pools? [Y/n]: ").strip().lower()
+        if response and response not in ['y', 'yes']:
+            logger.info("Update cancelled by user")
+            print("Update cancelled by user")
+            return
+    except KeyboardInterrupt:
+        logger.info("Update cancelled by user")
+        print("\nUpdate cancelled by user")
+        return
+    
+    # Download updates
+    pool_ids_to_update = [update['pool_id'] for update in pools_with_updates]
+    logger.info(f"Downloading updates for {len(pool_ids_to_update)} pools...")
+    
+    failed_downloads = await process_pool_ids(pool_ids_to_update, skip_existing=True, base_download_dir=base_download_dir)
+    
+    if failed_downloads:
+        logger.warning(f"Some downloads failed: {failed_downloads}")
+        print(f"⚠️  Some downloads failed: {len(failed_downloads)} pools had issues")
+    else:
+        logger.info("All pool updates completed successfully!")
+        print("All pool updates completed successfully!")
