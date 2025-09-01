@@ -7,7 +7,7 @@ async def main():
     """Command-line interface for downloading pools."""
     parser = argparse.ArgumentParser(description="Download pools from e621.")
     parser.add_argument("pool_ids", nargs="*", help="List of pool IDs or URLs")
-    parser.add_argument("-l", "--log-level", default="WARNING", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
+    parser.add_argument("-l", "--log-level", default="INFO", help="Set logging level (DEBUG, INFO, WARNING, ERROR)")
     parser.add_argument("--force-redownload", action="store_true", help="Redownload all files, even if they already exist")
     parser.add_argument("-d", "--download-dir", default=".", help="Base directory for downloads (default: current directory)")
     parser.add_argument("--update", action="store_true", help="Check all previously downloaded pools for updates and download new posts")
