@@ -30,7 +30,7 @@ async def download_image(post: Post, index, working_dir):
                 async with aiofiles.open(path, "wb") as f:
                     await f.write(await response.read())
 
-        logger.info(f"Downloaded {path}")
+        logger.debug(f"Downloaded {path}")
     
     except aiohttp.ClientError as e:
         logger.warning(f"Failed to download {post.file_url}: {e}")
